@@ -2,7 +2,7 @@ name: Daily Website Screenshot
 
 on:
   schedule:
-    # 12:05 AM IST = 18:35 UTC (previous day)
+    # Runs daily at 12:05 AM IST (18:35 UTC previous day)
     - cron: '35 18 * * *'
   workflow_dispatch: # allows manual trigger
 
@@ -29,14 +29,8 @@ jobs:
         run: |
           mkdir -p screenshots
           TIMESTAMP=$(date +"%Y-%m-%d")
-          npx playwright screenshot "https://yourwebsite.com" \
+          npx playwright screenshot "https://leetcode-grinder.netlify.app/" \
             -o screenshots/${TIMESTAMP}.png --full-page
-
-      - name: Upload Screenshot as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: website-screenshot-${{ github.run_number }}
-          path: screenshots/${{ github.run_number }}.png
 
       - name: Commit and push screenshot
         run: |
@@ -46,3 +40,27 @@ jobs:
           git add screenshots/${TIMESTAMP}.png
           git commit -m "Add screenshot for ${TIMESTAMP}" || echo "No new screenshot"
           git push
+
+      - name: Send Screenshot Email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "Daily Website Screenshot - ${{ github.run_number }}"
+          to: "rithvik.matta@gmail.com,rishi.sheth19@gmail.com,raghav4engg@gmail.com,rithishbarath6@gmail.com,sanjit2devmaheswaran@gmail.com,rishil.aj99@gmail.com"
+          from: "Daily Bot <${{ secrets.EMAIL_USERNAME }}>"
+          body: |
+            Hello 👋,
+            
+            Here’s the daily screenshot of your website (https://leetcode-grinder.netlify.app/) taken at 12:05 AM IST. Hope u finished yesterday's leetcode question else u should give all the other reciepients their chocolates. Muhahahahahahahahahahaha
+
+            Best,
+            GitHub Actions Bot 🤖 -> Made by rtk
+          attachments: screenshots/${{ github.run_number }}.png
+
+      - name: Cleanup old screenshots
+        run: |
+          find screenshots -type f -mtime +30 -delete
