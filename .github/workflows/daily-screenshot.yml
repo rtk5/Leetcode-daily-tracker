@@ -29,8 +29,15 @@ jobs:
         run: |
           mkdir -p screenshots
           TIMESTAMP=$(date +"%Y-%m-%d")
-          npx playwright screenshot "https://leetcode-grinder.netlify.app/" \
-            -o screenshots/${TIMESTAMP}.png --full-page
+          echo "const { chromium } = require('playwright');
+          (async () => {
+            const browser = await chromium.launch();
+            const page = await browser.newPage();
+            await page.goto('https://leetcode-grinder.netlify.app/', { waitUntil: 'networkidle' });
+            await page.screenshot({ path: 'screenshots/${TIMESTAMP}.png', fullPage: true });
+            await browser.close();
+          })();" > screenshot.js
+          node screenshot.js
 
       - name: Commit and push screenshot
         run: |
