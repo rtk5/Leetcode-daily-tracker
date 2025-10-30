@@ -69,7 +69,7 @@ jobs:
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: "Daily SS LC Digger - ${{ env.TIMESTAMP }}"
-          to: "rithvik.matta@gmail.com,rishi.sheth19@gmail.com,raghav4engg@gmail.com,rithishbarath6@gmail.com,sanjit2devmaheswaran@gmail.com,rishil.aj99@gmail.com"
+          to: "rithvik.matta@gmail.com,rishi.sheth19@gmail.com,raghav4engg@gmail.com,rithishbarath6@gmail.com,sanjit2devmaheswaran@gmail.com,rishil.aj99@gmail.com,rithvikhemanth360@gmail.com"
           from: "Daily Bot <${{ secrets.EMAIL_USERNAME }}>"
           body: |
             Hello 👋,
