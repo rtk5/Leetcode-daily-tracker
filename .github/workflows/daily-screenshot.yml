@@ -25,10 +25,12 @@ jobs:
           npm i -D playwright
           npx playwright install --with-deps
 
+      - name: Set timestamp
+        run: echo "TIMESTAMP=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
       - name: Take Screenshot
         run: |
           mkdir -p screenshots
-          TIMESTAMP=$(date +"%Y-%m-%d")
           echo "const { chromium } = require('playwright');
           (async () => {
             try {
@@ -38,7 +40,7 @@ jobs:
               await page.goto('https://leetcode-grinder.netlify.app/', { waitUntil: 'load', timeout: 60000 });
               await page.waitForTimeout(5000);
               console.log('Taking screenshot...');
-              await page.screenshot({ path: 'screenshots/${TIMESTAMP}.png', fullPage: true });
+              await page.screenshot({ path: 'screenshots/${{ env.TIMESTAMP }}.png', fullPage: true });
               console.log('✅ Screenshot saved successfully.');
               await browser.close();
             } catch (error) {
@@ -48,16 +50,15 @@ jobs:
           })();" > screenshot.cjs
           node screenshot.cjs
 
-
-
       - name: Commit and push screenshot
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          TIMESTAMP=$(date +"%Y-%m-%d")
-          git add screenshots/${TIMESTAMP}.png
-          git commit -m "Add screenshot for ${TIMESTAMP}" || echo "No new screenshot"
-          git push
+          git add screenshots/${{ env.TIMESTAMP }}.png
+          git commit -m "Add screenshot for ${{ env.TIMESTAMP }}" || echo "No new screenshot"
+          git push https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git HEAD:main
 
       - name: Send Screenshot Email
         uses: dawidd6/action-send-mail@v3
@@ -67,7 +68,7 @@ jobs:
           secure: true
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "Daily SS LC Digger - ${{ github.run_number }}"
+          subject: "Daily SS LC Digger - ${{ env.TIMESTAMP }}"
           to: "rithvik.matta@gmail.com,rishi.sheth19@gmail.com,raghav4engg@gmail.com,rithishbarath6@gmail.com,sanjit2devmaheswaran@gmail.com,rishil.aj99@gmail.com"
           from: "Daily Bot <${{ secrets.EMAIL_USERNAME }}>"
           body: |
@@ -80,7 +81,7 @@ jobs:
 
             Best,  
             GitHub Actions Bot 🤖 → Made by rtk
-          attachments: screenshots/${{ github.run_number }}.png
+          attachments: screenshots/${{ env.TIMESTAMP }}.png
 
       - name: Cleanup old screenshots
         run: |
