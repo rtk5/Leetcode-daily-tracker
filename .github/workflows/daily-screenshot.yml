@@ -37,3 +37,12 @@ jobs:
         with:
           name: website-screenshot-${{ github.run_number }}
           path: screenshots/${{ github.run_number }}.png
+
+      - name: Commit and push screenshot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          TIMESTAMP=$(date +"%Y-%m-%d")
+          git add screenshots/${TIMESTAMP}.png
+          git commit -m "Add screenshot for ${TIMESTAMP}" || echo "No new screenshot"
+          git push
