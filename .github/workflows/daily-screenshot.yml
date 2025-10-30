@@ -1,0 +1,39 @@
+name: Daily Website Screenshot
+
+on:
+  schedule:
+    # 12:05 AM IST = 18:35 UTC (previous day)
+    - cron: '35 18 * * *'
+  workflow_dispatch: # allows manual trigger
+
+jobs:
+  screenshot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Playwright
+        run: |
+          npm init -y
+          npm i -D playwright
+          npx playwright install --with-deps
+
+      - name: Take Screenshot
+        run: |
+          mkdir -p screenshots
+          TIMESTAMP=$(date +"%Y-%m-%d")
+          npx playwright screenshot "https://yourwebsite.com" \
+            -o screenshots/${TIMESTAMP}.png --full-page
+
+      - name: Upload Screenshot as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: website-screenshot-${{ github.run_number }}
+          path: screenshots/${{ github.run_number }}.png
