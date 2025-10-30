@@ -49,16 +49,19 @@ jobs:
           secure: true
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "Daily Website Screenshot - ${{ github.run_number }} <- LC DIGGER!"
+          subject: "Daily SS LC Digger - ${{ github.run_number }}"
           to: "rithvik.matta@gmail.com,rishi.sheth19@gmail.com,raghav4engg@gmail.com,rithishbarath6@gmail.com,sanjit2devmaheswaran@gmail.com,rishil.aj99@gmail.com"
           from: "Daily Bot <${{ secrets.EMAIL_USERNAME }}>"
           body: |
             Hello 👋,
             
-            Here’s the daily screenshot of your website (https://leetcode-grinder.netlify.app/) taken at 12:05 AM IST. Hope u finished yesterday's leetcode question else u should give all the other reciepients their chocolates🍫😈. Muhahahahahahahahahahaha
+            Here’s the daily screenshot of your website (https://leetcode-grinder.netlify.app/) taken at 12:05 AM IST.
+            
+            Hope you finished yesterday's LeetCode question — else you owe everyone else chocolates 🍫😈  
+            Muhahahahahahahahahahaha
 
-            Best,
-            GitHub Actions Bot 🤖 -> Made by rtk
+            Best,  
+            GitHub Actions Bot 🤖 → Made by rtk
           attachments: screenshots/${{ github.run_number }}.png
 
       - name: Cleanup old screenshots
