@@ -42,11 +42,17 @@ A collaborative web application to track and compare LeetCode problem-solving pr
 - Daily problem-solving count
 - Historical progress tracking
 
+### 📸 Daily Accountability
+- **Automated Screenshot Capture** - Takes full-page screenshots daily at 12:05 AM IST
+- **Email Notifications** - Sends screenshots to all group members
+- **Friendly Reminders** - Motivational messages about maintaining streaks
+- **Screenshot Archive** - Stores 30 days of historical screenshots
+
 ## 🎬 Demo
 
 > Add your deployed website URL here
 
-**Live Demo:** [Your Netlify URL]
+**Live Demo:** [[click here!](https://leetcode-grinder.netlify.app/)]
 
 **Test the app:**
 1. Add your LeetCode username
@@ -73,6 +79,11 @@ A collaborative web application to track and compare LeetCode problem-solving pr
 - **GitHub Actions** - Automated daily data refresh
 - **Netlify** - Frontend hosting and deployment
 - **Git** - Version control
+
+### Automation & Monitoring
+- **Playwright** - Automated browser screenshots
+- **Gmail SMTP** - Email notification system
+- **Cron Jobs** - Scheduled workflows
 
 ## 🏗️ Architecture
 
@@ -106,9 +117,18 @@ A collaborative web application to track and compare LeetCode problem-solving pr
 │   (GraphQL)     │
 └─────────────────┘
 
-GitHub Actions (Daily Cron)
-         │
-         └──► Triggers refresh-all-users
+┌──────────────────────────────┐
+│   GitHub Actions (Cron)      │
+├──────────────────────────────┤
+│  1. refresh-leetcode.yml     │
+│     - Runs at 12:00 AM IST   │
+│     - Updates all user data  │
+│                              │
+│  2. screenshot.yml           │
+│     - Runs at 12:05 AM IST   │
+│     - Captures website       │
+│     - Emails all members     │
+└──────────────────────────────┘
 ```
 
 ## 🚀 Getting Started
