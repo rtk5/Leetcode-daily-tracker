@@ -1,0 +1,46 @@
+# Create this file at: .github/workflows/refresh-leetcode.yml
+
+name: Refresh LeetCode Data Daily
+
+on:
+  schedule:
+    # Runs at 6:30 PM UTC (12:00 AM IST) every day
+    - cron: '30 18 * * *'
+  
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  refresh-all-users:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Fetch all users and refresh their data
+        run: |
+          echo "Starting LeetCode data refresh..."
+          
+          # Get all users from Supabase
+          USERS=$(curl -s "${{ secrets.SUPABASE_URL }}/rest/v1/users?select=leetcode_username" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}")
+          
+          echo "Found users: $USERS"
+          
+          # Extract usernames and call fetch function for each
+          echo "$USERS" | jq -r '.[].leetcode_username' | while read username; do
+            echo "Refreshing data for: $username"
+            
+            curl -X GET "${{ secrets.SUPABASE_URL }}/functions/v1/fetch-leetcode-data?username=$username" \
+              -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
+              || echo "Failed to refresh $username"
+            
+            # Wait 2 seconds between requests to avoid rate limiting
+            sleep 2
+          done
+          
+          echo "Refresh completed!"
+      
+      - name: Send notification on failure
+        if: failure()
+        run: |
+          echo "❌ Daily refresh failed. Check the logs above."
