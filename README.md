@@ -50,8 +50,6 @@ A collaborative web application to track and compare LeetCode problem-solving pr
 
 ## 🎬 Demo
 
-> Add your deployed website URL here
-
 **Live Demo:** [[click here!](https://leetcode-grinder.netlify.app/)]
 
 **Test the app:**
@@ -567,14 +565,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Tailwind CSS](https://tailwindcss.com) for styling
 - [Lucide](https://lucide.dev) for icons
 
-## 📞 Contact
-
-**Project Maintainer:** [Your Name]
-
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Email: your.email@example.com
-
-**Project Link:** [https://github.com/yourusername/leetcode-daily-tracker](https://github.com/yourusername/leetcode-daily-tracker)
 
 ---
 
