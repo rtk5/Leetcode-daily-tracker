@@ -15,6 +15,27 @@ interface LeetCodeUserData {
   avatar?: string;
 }
 
+// Helper function to get current date in IST
+function getISTDate(date: Date = new Date()): string {
+  // Convert to IST (UTC+5:30)
+  const istOffset = 5.5 * 60 * 60 * 1000; // 5 hours 30 minutes in milliseconds
+  const istTime = new Date(date.getTime() + istOffset);
+  return istTime.toISOString().split('T')[0];
+}
+
+// Helper function to get IST timestamp
+function getISTTimestamp(date: Date = new Date()): string {
+  const istOffset = 5.5 * 60 * 60 * 1000;
+  const istTime = new Date(date.getTime() + istOffset);
+  return istTime.toISOString();
+}
+
+// Helper function to get yesterday's date in IST
+function getISTYesterday(): string {
+  const yesterday = new Date(Date.now() - 86400000);
+  return getISTDate(yesterday);
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, {
@@ -47,7 +68,7 @@ Deno.serve(async (req: Request) => {
 
     if (!leetcodeData) {
       await supabase.from('fetch_log').insert({
-        fetch_time: new Date().toISOString(),
+        fetch_time: getISTTimestamp(),
         success: false,
         error_message: `Failed to fetch data for ${username}`,
       });
@@ -68,7 +89,7 @@ Deno.serve(async (req: Request) => {
       .eq('leetcode_username', username)
       .maybeSingle();
 
-    const today = new Date().toISOString().split('T')[0];
+    const today = getISTDate();
     let userId: string;
     let previousTotal = 0;
 
@@ -95,7 +116,7 @@ Deno.serve(async (req: Request) => {
           avatar_url: leetcodeData.avatar,
           current_streak,
           longest_streak,
-          last_fetched_at: new Date().toISOString(),
+          last_fetched_at: getISTTimestamp(),
         })
         .eq('id', userId);
     } else {
@@ -112,7 +133,7 @@ Deno.serve(async (req: Request) => {
           avatar_url: leetcodeData.avatar,
           current_streak: leetcodeData.totalSolved > 0 ? 1 : 0,
           longest_streak: leetcodeData.totalSolved > 0 ? 1 : 0,
-          last_fetched_at: new Date().toISOString(),
+          last_fetched_at: getISTTimestamp(),
         })
         .select()
         .single();
@@ -137,7 +158,7 @@ Deno.serve(async (req: Request) => {
     // Log successful fetch
     await supabase.from('fetch_log').insert({
       user_id: userId,
-      fetch_time: new Date().toISOString(),
+      fetch_time: getISTTimestamp(),
       success: true,
     });
 
@@ -248,8 +269,8 @@ async function calculateStreak(
     };
   }
 
-  const today = new Date().toISOString().split('T')[0];
-  const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+  const today = getISTDate();
+  const yesterday = getISTYesterday();
 
   let currentStreak = 0;
   const sortedStats = dailyStats.sort(
@@ -260,13 +281,13 @@ async function calculateStreak(
 
   if (solvedToday) {
     currentStreak = 1;
-    let checkDate = new Date(yesterday);
+    let checkDate = new Date(Date.now() - 86400000);
 
     for (const stat of sortedStats) {
       const statDate = stat.date;
       if (statDate === today) continue;
 
-      const expectedDate = checkDate.toISOString().split('T')[0];
+      const expectedDate = getISTDate(checkDate);
 
       if (statDate === expectedDate && stat.problems_solved > 0) {
         currentStreak++;
