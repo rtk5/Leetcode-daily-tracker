@@ -75,10 +75,10 @@ jobs:
           body: |
             Hello 👋,
             
-            Here’s the daily screenshot of your website (https://leetcode-grinder.netlify.app/) taken at 12:05 AM IST.
-            
-            Hope you finished yesterday's LeetCode question — else you owe everyone else chocolates 🍫😈  
-            Muhahahahahahahahahahaha
+            Here’s the daily screenshot of the website (https://leetcode-grinder.netlify.app/) taken at 12:05 AM IST.
+
+            Finish your daily question and maintain your streak!!!!
+          
 
             Best,  
             GitHub Actions Bot 🤖 → Made by rtk
