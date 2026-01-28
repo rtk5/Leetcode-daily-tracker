@@ -55,7 +55,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "rtk5"
-          git config user.email "12345678+rtk5@users.noreply.github.com"
+          git config user.email "rithvik.matta@gmail.com"
           git add screenshots/${{ env.TIMESTAMP }}.png
           git commit -m "Add screenshot for ${{ env.TIMESTAMP }}" || echo "No new screenshot"
           git push https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git HEAD:main
